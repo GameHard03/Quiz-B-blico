@@ -1,0 +1,764 @@
+<html><head><base href="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  min-height: 100vh;
+  position: relative;
+  display: block;
+  overflow-x: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: explode 1s ease-out forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(15);
+    opacity: 0;
+  }
+}
+
+.container {
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+  background: rgba(20, 20, 20, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  position: relative; /* Updated for positioning */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  overflow: hidden;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #0ff, transparent);
+  animation: scanline 2s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.game-title {
+  text-align: center;
+  color: #0ff;
+  margin-bottom: 30px;
+  font-size: clamp(1.5em, 5vw, 2.5em);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  font-weight: 600;
+}
+
+.difficulty-select {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.difficulty-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 25px;
+  background: linear-gradient(45deg, #2b2b2b, #3d3d3d);
+  color: #0ff;
+  border: 1px solid #0ff;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px auto;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+  background: linear-gradient(45deg, #3d3d3d, #2b2b2b);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.difficulty-options {
+  display: none;
+  margin-top: 10px;
+}
+
+.difficulty-options.show {
+  display: block;
+}
+
+.start-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 15px 40px;
+  background: linear-gradient(45deg, #006666, #009999);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin: 20px auto;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.start-btn:hover {
+  background: linear-gradient(45deg, #009999, #006666);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.question-container {
+  display: none;
+  text-align: center;
+  background: rgba(30, 30, 30, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+.level-display {
+  font-size: 1.3em;
+  margin-bottom: 25px;
+  color: #0ff;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.high-score {
+  text-align: center;
+  font-size: 1.2em;
+  color: #0ff;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.options-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+.option-btn {
+  padding: 15px 20px;
+  background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+  color: #0ff;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  transition: all 0.3s ease;
+  font-size: 1.1em;
+  line-height: 1.4;
+  margin: 5px 0;
+  width: 100%;
+  text-align: left;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.option-btn:hover {
+  background: linear-gradient(45deg, #2d2d2d, #1a1a1a);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.loading {
+  display: none;
+  text-align: center;
+  margin: 20px 0;
+  color: #0ff;
+}
+
+.loading::after {
+  content: "⟁";
+  animation: spin 1s infinite linear;
+  display: inline-block;
+  font-size: 2em;
+}
+
+@keyframes spin {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}
+
+#question {
+  color: #fff;
+  font-size: 1.2em;
+  line-height: 1.8;
+  margin: 25px 0;
+  padding: 0 15px;
+  text-shadow: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  padding: 35px;
+  border-radius: 15px;
+  max-width: 550px;
+  width: 90%;
+  text-align: center;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.modal-title {
+  color: #0ff;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.modal-content {
+  color: #e0e0e0;
+  margin: 25px 0;
+  line-height: 1.8;
+  font-size: 1.1em;
+  letter-spacing: 0.3px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+}
+
+.next-btn {
+  padding: 12px 30px;
+  background: linear-gradient(45deg, #006666, #009999);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.next-btn:hover {
+  background: linear-gradient(45deg, #009999, #006666);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.give-up-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 15px;
+  background: linear-gradient(45deg, #660000, #990000);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.give-up-btn:hover {
+  background: linear-gradient(45deg, #990000, #660000);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+.initial-menu {
+  text-align: center;
+}
+
+.give-up-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 90%;
+  width: 300px;
+  text-align: center;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  z-index: 1001;
+}
+
+.give-up-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.give-up-modal-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.confirm-give-up {
+  background: linear-gradient(45deg, #660000, #990000);
+  color: white;
+  border: none;
+}
+
+.cancel-give-up {
+  background: linear-gradient(45deg, #2b2b2b, #3d3d3d);
+  color: #0ff;
+  border: 1px solid #0ff;
+}
+
+#incorrectModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#incorrectModal .modal {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  padding: 35px;
+  border-radius: 15px;
+  max-width: 550px;
+  width: 90%;
+  text-align: center;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="initialMenu" class="initial-menu">
+    <h1 class="game-title">Quiz Bíblico</h1>
+    
+    <div class="high-score">
+      Recorde: Nível <span id="highScore">0</span>
+    </div>
+
+    <div class="difficulty-select">
+      <button id="difficultyBtn" class="difficulty-btn">Selecionar Dificuldade</button>
+      <div id="difficultyOptions" class="difficulty-options">
+        <button class="difficulty-btn" data-difficulty="easy">Fácil</button>
+        <button class="difficulty-btn" data-difficulty="medium">Médio</button>
+        <button class="difficulty-btn" data-difficulty="hard">Difícil</button>
+      </div>
+    </div>
+
+    <div style="text-align: center;">
+      <button id="startBtn" class="start-btn">Start</button>
+    </div>
+  </div>
+
+  <div id="questionContainer" class="question-container">
+    <div class="level-display">Nível: <span id="currentLevel">1</span></div>
+    <h2 id="question"></h2>
+    <div id="options" class="options-container"></div>
+    <button id="giveUpBtn" class="give-up-btn">Desistir</button>
+  </div>
+  
+  <div id="loading" class="loading">Gerando pergunta...</div>
+
+  <div id="modalOverlay" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h3 class="modal-title">Correto!</h3>
+      <div id="modalContent" class="modal-content"></div>
+      <button id="nextBtn" class="next-btn">Próximo</button>
+    </div>
+  </div>
+
+  <div id="giveUpModal" class="give-up-modal">
+    <h3 class="modal-title">Tem certeza?</h3>
+    <p>Seu progresso será perdido!</p>
+    <div class="give-up-modal-buttons">
+      <button class="give-up-modal-btn confirm-give-up" id="confirmGiveUp">Sim</button>
+      <button class="give-up-modal-btn cancel-give-up" id="cancelGiveUp">Não</button>
+    </div>
+  </div>
+
+  <div id="incorrectModal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h3 class="modal-title" style="color: #ff4444;">Incorreto!</h3>
+      <div class="modal-content">
+        <p id="incorrectAnswer"></p>
+        <p id="incorrectExplanation"></p>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="restartBtn" class="next-btn" style="background: linear-gradient(45deg, #006666, #009999);">Recomeçar</button>
+        <button id="homeBtn" class="next-btn" style="background: linear-gradient(45deg, #444444, #666666);">Home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function createParticleExplosion(x, y) {
+  const particleCount = 8;
+  const angleStep = (2 * Math.PI) / particleCount;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    
+    // Calculate spread direction
+    const angle = angleStep * i;
+    const speed = 2 + Math.random() * 2;
+    const spreadX = Math.cos(angle) * speed;
+    const spreadY = Math.sin(angle) * speed;
+    
+    particle.style.transform = `translate(${spreadX}px, ${spreadY}px)`;
+    
+    document.body.appendChild(particle);
+    
+    // Remove particle after animation
+    setTimeout(() => {
+      document.body.removeChild(particle);
+    }, 1000);
+  }
+}
+
+function createRandomExplosion() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  createParticleExplosion(x, y);
+}
+
+// Create initial explosions
+for(let i = 0; i < 10; i++) {
+  setTimeout(createRandomExplosion, Math.random() * 2000);
+}
+
+// Continue creating explosions
+setInterval(createRandomExplosion, 500);
+
+class BibleQuizAI {
+  constructor() {
+    this.usedQuestions = new Set();
+    this.currentDifficulty = 'medium';
+    this.currentLevel = 1;
+  }
+
+  async generateQuestion() {
+    const difficultyFactors = {
+      easy: "básico com foco em histórias bem conhecidas da Bíblia",
+      medium: "intermediário com detalhes específicos e contexto histórico",
+      hard: "avançado com análise teológica profunda e conexões entre passagens"
+    };
+
+    const prompt = `Generate a unique Bible quiz question. 
+    Difficulty level: ${this.currentDifficulty} (${difficultyFactors[this.currentDifficulty]})
+    Current game level: ${this.currentLevel}
+    
+    Rules:
+    - Question must be unique and never repeated
+    - Include theological depth appropriate for the difficulty
+    - Questions should become progressively more challenging as levels increase
+    - Include scriptural references and context in the explanation
+    
+    <typescript-interface>
+    interface QuizQuestion {
+      question: string;
+      options: string[];
+      correctAnswer: string;
+      explanation: string;
+      difficulty: string;
+      level: number;
+    }
+    </typescript-interface>
+    
+    <example>
+    {
+      "question": "Durante a construção da Torre de Babel, qual foi a intervenção divina que impediu sua conclusão?",
+      "options": ["Confusão das línguas", "Grande tempestade", "Terremoto", "Fogo do céu"],
+      "correctAnswer": "Confusão das línguas",
+      "explanation": "Em Gênesis 11:1-9, Deus confundiu as línguas dos construtores para impedir que completassem a torre, demonstrando Sua soberania sobre as ambições humanas.",
+      "difficulty": "medium",
+      "level": 1
+    }
+    </example>`;
+
+    try {
+      const response = await fetch('/api/ai_completion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          data: {
+            difficulty: this.currentDifficulty,
+            level: this.currentLevel,
+            usedQuestions: Array.from(this.usedQuestions)
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const questionData = await response.json();
+      
+      // Check if question has been used before
+      if (this.usedQuestions.has(questionData.question)) {
+        return this.generateFallbackQuestion();
+      }
+      
+      this.usedQuestions.add(questionData.question);
+      return questionData;
+    } catch (error) {
+      console.error('Error generating question:', error);
+      return this.generateFallbackQuestion();
+    }
+  }
+
+  generateFallbackQuestion() {
+    const fallbackQuestions = [
+      {
+        question: "Qual foi o primeiro milagre de Jesus registrado no Evangelho de João?",
+        options: ["Transformar água em vinho", "Multiplicação dos pães", "Cura do cego", "Ressurreição de Lázaro"],
+        correctAnswer: "Transformar água em vinho",
+        explanation: "Em João 2:1-11, Jesus realizou seu primeiro milagre nas Bodas de Caná, transformando água em vinho."
+      },
+      {
+        question: "Quem foi chamado 'amigo de Deus' nas escrituras?",
+        options: ["Abraão", "Moisés", "Davi", "Daniel"],
+        correctAnswer: "Abraão",
+        explanation: "Abraão é chamado de amigo de Deus em Tiago 2:23 e 2 Crônicas 20:7."
+      },
+      {
+        question: "Qual profeta foi alimentado por corvos?",
+        options: ["Elias", "Eliseu", "Jeremias", "Ezequiel"],
+        correctAnswer: "Elias",
+        explanation: "Em 1 Reis 17:2-6, Deus ordenou que corvos alimentassem Elias com pão e carne."
+      }
+    ];
+    
+    // Filter out used questions
+    const availableQuestions = fallbackQuestions.filter(q => !this.usedQuestions.has(q.question));
+    
+    if (availableQuestions.length === 0) {
+      // Reset used questions if all fallbacks have been used
+      this.usedQuestions.clear();
+      return fallbackQuestions[0];
+    }
+    
+    const selectedQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+    this.usedQuestions.add(selectedQuestion.question);
+    return selectedQuestion;
+  }
+
+  setDifficulty(difficulty) {
+    this.currentDifficulty = difficulty;
+  }
+
+  setLevel(level) {
+    this.currentLevel = level;
+  }
+}
+
+let quizAI = new BibleQuizAI();
+let currentDifficulty = 'medium';
+let currentLevel = 1;
+let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+let currentQuestion = null;
+
+document.getElementById('highScore').textContent = highScore;
+
+const difficultyBtn = document.getElementById('difficultyBtn');
+const difficultyOptions = document.getElementById('difficultyOptions');
+const loadingIndicator = document.getElementById('loading');
+
+difficultyBtn.addEventListener('click', () => {
+  difficultyOptions.classList.toggle('show');
+});
+
+document.querySelectorAll('.difficulty-options .difficulty-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    currentDifficulty = e.target.dataset.difficulty;
+    quizAI.setDifficulty(currentDifficulty);
+    difficultyOptions.classList.remove('show');
+    difficultyBtn.textContent = `Dificuldade: ${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}`;
+  });
+});
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+
+function showInitialMenu() {
+  document.getElementById('initialMenu').style.display = 'block';
+  document.getElementById('questionContainer').style.display = 'none';
+  currentLevel = 1;
+  updateLevel();
+}
+
+function hideInitialMenu() {
+  document.getElementById('initialMenu').style.display = 'none';
+}
+
+function startGame() {
+  hideInitialMenu();
+  document.getElementById('questionContainer').style.display = 'block';
+  currentLevel = 1;
+  quizAI.setLevel(currentLevel);
+  updateLevel();
+  showQuestion();
+}
+
+async function showQuestion() {
+  loadingIndicator.style.display = 'block';
+  quizAI.setLevel(currentLevel);
+  const questionData = await quizAI.generateQuestion();
+  loadingIndicator.style.display = 'none';
+  
+  currentQuestion = questionData;
+  
+  document.getElementById('question').textContent = questionData.question;
+  const optionsContainer = document.getElementById('options');
+  optionsContainer.innerHTML = '';
+  
+  questionData.options.forEach(option => {
+    const button = document.createElement('button');
+    button.className = 'option-btn';
+    button.textContent = option;
+    button.addEventListener('click', () => checkAnswer(option));
+    optionsContainer.appendChild(button);
+  });
+}
+
+async function checkAnswer(selectedAnswer) {
+  if (selectedAnswer === currentQuestion.correctAnswer) {
+    // Show modal with explanation
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+    modalContent.textContent = currentQuestion.explanation;
+    modalOverlay.style.display = 'flex';
+    
+    // Trigger particle explosion
+    createParticleExplosion(window.innerWidth / 2, window.innerHeight / 2);
+    
+    // Setup next button handler
+    document.getElementById('nextBtn').onclick = async () => {
+      currentLevel++;
+      quizAI.setLevel(currentLevel);
+      if (currentLevel > highScore) {
+        highScore = currentLevel;
+        localStorage.setItem('highScore', highScore);
+        document.getElementById('highScore').textContent = highScore;
+      }
+      updateLevel();
+      modalOverlay.style.display = 'none';
+      await showQuestion();
+    };
+  } else {
+    // Show incorrect answer modal
+    const incorrectModal = document.getElementById('incorrectModal');
+    const incorrectAnswer = document.getElementById('incorrectAnswer');
+    const incorrectExplanation = document.getElementById('incorrectExplanation');
+    
+    incorrectAnswer.textContent = `A resposta correta era: ${currentQuestion.correctAnswer}`;
+    incorrectExplanation.textContent = currentQuestion.explanation;
+    incorrectModal.style.display = 'flex';
+  }
+}
+
+document.getElementById('giveUpBtn').addEventListener('click', () => {
+  document.getElementById('giveUpModal').style.display = 'block';
+  document.getElementById('modalOverlay').style.display = 'flex';
+});
+
+document.getElementById('confirmGiveUp').addEventListener('click', () => {
+  document.getElementById('giveUpModal').style.display = 'none';
+  document.getElementById('modalOverlay').style.display = 'none';
+  showInitialMenu();
+});
+
+document.getElementById('cancelGiveUp').addEventListener('click', () => {
+  document.getElementById('giveUpModal').style.display = 'none';
+  document.getElementById('modalOverlay').style.display = 'none';
+});
+
+document.getElementById('restartBtn').addEventListener('click', async () => {
+  document.getElementById('incorrectModal').style.display = 'none';
+  // Reset game state
+  currentLevel = 1;
+  quizAI.setLevel(currentLevel);
+  updateLevel();
+  // Clear used questions to ensure fresh start
+  quizAI.usedQuestions.clear();
+  document.getElementById('questionContainer').style.display = 'block';
+  await showQuestion();
+});
+
+document.getElementById('homeBtn').addEventListener('click', () => {
+  document.getElementById('incorrectModal').style.display = 'none';
+  showInitialMenu();
+});
+
+function updateLevel() {
+  document.getElementById('currentLevel').textContent = currentLevel;
+}
+</script>
+</body></html>
